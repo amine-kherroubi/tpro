@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from queue import Queue
 
 
-class UndirectedGraph:
+class UndirectedGraph(object):
     __slots__ = ("_adjacency_matrix", "_vertices_count")
 
     def __init__(self, vertices_count: int) -> None:
