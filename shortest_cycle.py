@@ -90,7 +90,7 @@ class GraphCycleGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Shortest Cycle Finder")
-        self.root.geometry("500x400")
+        self.root.geometry("500x700")
 
         self.graph = None
 
