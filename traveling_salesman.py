@@ -11,7 +11,6 @@ from tkinter.scrolledtext import ScrolledText
 import itertools
 import time
 import random
-from typing import List, Tuple, Optional
 
 # =============================================================================
 # ALGORITHMS
@@ -37,7 +36,7 @@ def tsp_exact(dist: list[list[float]]) -> tuple[float, list[int]]:
 
     vertices: list[int] = list(range(1, n))
     best_cost: float = float("inf")
-    best_perm: Optional[tuple[int, ...]] = None
+    best_perm: tuple[int, ...] | None = None
 
     # Try all permutations of cities 1 to n-1 (city 0 is fixed start)
     for perm in itertools.permutations(vertices):
@@ -118,7 +117,7 @@ def tsp_held_karp(dist: list[list[float]]) -> tuple[float, list[int]]:
             # Compute C(mask, j) using recurrence relation
             if j not in dp[mask]:
                 best_cost: float = INF
-                best_prev: Optional[int] = None
+                best_prev: int | None = None
                 prev_mask: int = mask ^ (1 << j)  # Remove j from mask
 
                 # Try all possible previous cities i
@@ -128,7 +127,7 @@ def tsp_held_karp(dist: list[list[float]]) -> tuple[float, list[int]]:
                     if i == j:
                         continue
 
-                    cost_to_i: Optional[float] = dp[prev_mask].get(i)
+                    cost_to_i: float | None = dp[prev_mask].get(i)
                     if cost_to_i is None:
                         continue
 
@@ -142,7 +141,7 @@ def tsp_held_karp(dist: list[list[float]]) -> tuple[float, list[int]]:
                     parent[mask][j] = best_prev
 
             # Extend to larger subsets (add new cities)
-            cost_at_j: Optional[float] = dp[mask].get(j)
+            cost_at_j: float | None = dp[mask].get(j)
             if cost_at_j is None:
                 continue
 
@@ -152,7 +151,7 @@ def tsp_held_karp(dist: list[list[float]]) -> tuple[float, list[int]]:
 
                 next_mask: int = mask | (1 << k)
                 new_cost: float = cost_at_j + dist[j][k]
-                prev_cost: Optional[float] = dp[next_mask].get(k)
+                prev_cost: float | None = dp[next_mask].get(k)
 
                 if prev_cost is None or new_cost < prev_cost:
                     dp[next_mask][k] = new_cost
@@ -161,10 +160,10 @@ def tsp_held_karp(dist: list[list[float]]) -> tuple[float, list[int]]:
     # Find optimal solution: min over all ending cities
     full_mask: int = (1 << n) - 1
     best_cost: float = INF
-    best_last: Optional[int] = None
+    best_last: int | None = None
 
     for j in range(1, n):
-        cost_to_j: Optional[float] = dp[full_mask].get(j)
+        cost_to_j: float | None = dp[full_mask].get(j)
         if cost_to_j is None:
             continue
 
