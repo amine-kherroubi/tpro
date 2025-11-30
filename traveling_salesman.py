@@ -85,106 +85,65 @@ def tsp_held_karp(dist: list[list[float]]) -> tuple[float, list[int]]:
     Returns:
         (min_cost, optimal_path) where path starts and ends at city 0
     """
-    n: int = len(dist)
+    n = len(dist)
     if n == 0:
         return 0.0, []
     if n == 1:
         return 0.0, [0, 0]
 
-    INF: float = float("inf")
+    ALL = 1 << n
 
-    # dp[mask][j] = minimum cost to visit cities in mask, ending at city j
-    dp: list[dict[int, float]] = [dict() for _ in range(1 << n)]
-    parent: list[dict[int, int]] = [dict() for _ in range(1 << n)]
+    # DP[mask][i] = minimum cost to visit cities in mask, end at i
+    DP = [[float("inf")] * n for _ in range(ALL)]
+    parent = [[-1] * n for _ in range(ALL)]
 
-    # Initialization: C({0, j}, j) = dist[0][j]
-    for j in range(1, n):
-        mask: int = (1 << 0) | (1 << j)
-        dp[mask][j] = dist[0][j]
-        parent[mask][j] = 0
+    # Base case: start at city 0
+    DP[1 << 0][0] = 0
 
-    # Main DP loop: iterate through all subsets
-    for mask in range(1 << n):
-        # Skip if city 0 is not in the subset
-        if not (mask & 1):
-            continue
-
-        # For each city j in the subset
-        for j in range(1, n):
-            if not (mask & (1 << j)):
+    # Build DP
+    for mask in range(ALL):
+        for i in range(n):
+            if not (mask & (1 << i)):  # i not in mask
+                continue
+            if DP[mask][i] == float("inf"):  # unreachable state
                 continue
 
-            # Compute C(mask, j) using recurrence relation
-            if j not in dp[mask]:
-                best_cost: float = INF
-                best_prev: int | None = None
-                prev_mask: int = mask ^ (1 << j)  # Remove j from mask
-
-                # Try all possible previous cities i
-                for i in range(n):
-                    if not (prev_mask & (1 << i)):
-                        continue
-                    if i == j:
-                        continue
-
-                    cost_to_i: float | None = dp[prev_mask].get(i)
-                    if cost_to_i is None:
-                        continue
-
-                    total_cost: float = cost_to_i + dist[i][j]
-                    if total_cost < best_cost:
-                        best_cost = total_cost
-                        best_prev = i
-
-                if best_prev is not None:
-                    dp[mask][j] = best_cost
-                    parent[mask][j] = best_prev
-
-            # Extend to larger subsets (add new cities)
-            cost_at_j: float | None = dp[mask].get(j)
-            if cost_at_j is None:
-                continue
-
-            for k in range(1, n):
-                if mask & (1 << k):  # k already in subset
+            # Try extending to city j
+            for j in range(n):
+                if mask & (1 << j):  # j already visited
                     continue
 
-                next_mask: int = mask | (1 << k)
-                new_cost: float = cost_at_j + dist[j][k]
-                prev_cost: float | None = dp[next_mask].get(k)
+                new_mask = mask | (1 << j)
+                new_cost = DP[mask][i] + dist[i][j]
 
-                if prev_cost is None or new_cost < prev_cost:
-                    dp[next_mask][k] = new_cost
-                    parent[next_mask][k] = j
+                if new_cost < DP[new_mask][j]:
+                    DP[new_mask][j] = new_cost
+                    parent[new_mask][j] = i
 
-    # Find optimal solution: min over all ending cities
-    full_mask: int = (1 << n) - 1
-    best_cost: float = INF
-    best_last: int | None = None
+    # Find best tour ending at any city, then return to 0
+    full = (1 << n) - 1
+    best_cost = float("inf")
+    best_last = None
 
-    for j in range(1, n):
-        cost_to_j: float | None = dp[full_mask].get(j)
-        if cost_to_j is None:
-            continue
-
-        total_cost: float = cost_to_j + dist[j][0]
-        if total_cost < best_cost:
-            best_cost = total_cost
-            best_last = j
+    for i in range(1, n):
+        total = DP[full][i] + dist[i][0]
+        if total < best_cost:
+            best_cost = total
+            best_last = i
 
     if best_last is None:
         return float("inf"), []
 
     # Reconstruct path
-    path: list[int] = []
-    mask: int = full_mask
-    current: int = best_last
+    path = []
+    mask = full
+    curr = best_last
 
-    while current != 0:
-        path.append(current)
-        next_current: int = parent[mask][current]
-        mask ^= 1 << current
-        current = next_current
+    while curr != 0:
+        path.append(curr)
+        prev = parent[mask][curr]
+        mask ^= 1 << curr
+        curr = prev
 
     path.reverse()
     return best_cost, [0] + path + [0]
