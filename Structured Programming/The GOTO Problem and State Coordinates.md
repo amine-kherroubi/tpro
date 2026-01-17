@@ -1,6 +1,6 @@
 # The GOTO Problem and State Coordinates
 
-This document is based on _Go To Statement Considered Harmful_ by Edsger W. Dijkstra.
+This document is based on *Go To Statement Considered Harmful* by Edsger W. Dijkstra.
 
 ---
 
