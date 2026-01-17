@@ -1,0 +1,3 @@
+# Chart Predicate
+
+A **predicate** $p$ is a [[Chart Primitive|primitive]] with 1 [[Primitive Input Line|input line]] and 2 [[Primitive Output Line|output lines]] (1-IN, 2-OUT). The output lines are labeled $T$ (true) and $F$ (false). A predicate leaves data unchanged but transfers control from its input line to exactly one output line ($T$ or $F$), depending on whether the predicate holds at that instant.

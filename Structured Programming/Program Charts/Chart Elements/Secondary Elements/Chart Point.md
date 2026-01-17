@@ -1,0 +1,5 @@
+# Point
+
+A **point** in a [[Flow Chart|chart]] is a location where control can reside during program execution. Points correspond to connection locations in the flow graph structure.
+
+Points include chart [[Chart Entry Point|entry point]] and [[Chart Exit Point|exit point]], [[Chart Primitive|primitive]] connection points (the [[Primitive Input Line|input lines]] and [[Primitive Output Line|output lines]] of each primitive), and junction points where multiple [[Chart Line|lines]] merge into a single line. Points are typically denoted by Greek letters such as $\alpha$, $\beta$, $\gamma$. At any instant during [[Chart Computation|computation]], control is located at exactly one point, moves from point to point by traversing primitives, and the sequence of points visited forms the [[Computational History|computational history]].
