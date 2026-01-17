@@ -1,3 +1,0 @@
-# Structured Programming Schemata
-
-**Structured programming schemata** is the study of the **structural complexity of programs**, focusing on the organization and control mechanisms rather than specific data types or primitive instructions. Programs are modeled as [[Flow Chart|flow chart]] schemas, where basic [[Chart Action|actions]] and [[Chart Predicate|predicates]] are treated as uninterpreted symbols. In this framework, terms such as “programs,” “flow charts,” and “charts” are used interchangeably. The field provides tools to understand, compare, and reason about program behavior purely from their structural properties, independent of implementation details.

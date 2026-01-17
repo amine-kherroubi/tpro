@@ -1,3 +1,0 @@
-# Computational History
-
-Given an [[Chart Interpretation|interpretation]] and an input value $a$, the **computational history** or **control path** for input $a$ is the sequence of [[Chart Primitive|primitives]] through which control passes during execution starting from the [[Chart Entry Point|entry point]]. If the control path terminates at the [[Chart Exit Point|exit point]], we denote the resulting output value by $G(a)$ for [[Flow Chart|chart]] $G$. Some control paths may not terminate, resulting in infinite loops.
