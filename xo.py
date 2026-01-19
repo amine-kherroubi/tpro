@@ -26,7 +26,9 @@ def check_winner(board: list[str]) -> Optional[str]:
     return None
 
 
-def minimax(board: list[str], depth: int, is_maximizing: bool) -> int:
+def minimax(
+    board: list[str], depth: int, is_maximizing: bool, alpha: float, beta: float
+) -> int:
     result: Optional[str] = check_winner(board)
 
     if result == AI:
@@ -41,28 +43,35 @@ def minimax(board: list[str], depth: int, is_maximizing: bool) -> int:
         for i in range(9):
             if board[i] == EMPTY:
                 board[i] = AI
-                score: int = minimax(board, depth + 1, False)
+                score: int = minimax(board, depth + 1, False, alpha, beta)
                 board[i] = EMPTY
                 best_val = max(best_val, score)
+                alpha = max(alpha, best_val)
+                if beta <= alpha:
+                    break
         return int(best_val)
 
     best_val: float = inf
     for i in range(9):
         if board[i] == EMPTY:
             board[i] = HUMAN
-            score: int = minimax(board, depth + 1, True)
+            score: int = minimax(board, depth + 1, True, alpha, beta)
             board[i] = EMPTY
             best_val = min(best_val, score)
+            beta = min(beta, best_val)
+            if beta <= alpha:
+                break
     return int(best_val)
 
 
 def get_best_move(board: list[str]) -> int:
     best_score: float = -inf
     move: int = -1
+
     for i in range(9):
         if board[i] == EMPTY:
             board[i] = AI
-            score: int = minimax(board, 0, False)
+            score: int = minimax(board, 0, False, -inf, inf)
             board[i] = EMPTY
             if score > best_score:
                 best_score = score
@@ -87,7 +96,8 @@ def main() -> None:
             break
 
         try:
-            choice: int = int(input("Enter move (0-8): "))
+            raw_input: str = input("Enter move (0-8): ")
+            choice: int = int(raw_input)
             if not (0 <= choice <= 8) or board[choice] != EMPTY:
                 print("Invalid move. Try again.")
                 continue
